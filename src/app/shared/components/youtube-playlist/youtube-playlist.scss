@@ -1,0 +1,43 @@
+@import '../../../../css/echoes-variables.scss';
+
+@media (min-width: 320px) {
+	youtube-playlist {
+		width: 100%;
+
+		.youtube-playlist-item {
+			margin: 0;
+			padding: 1rem;
+			border-radius: 0;
+			background-color: rgba(0, 0, 0, 0);
+			box-shadow: none;
+			border: none;
+
+			.thumbnail aside {
+				position: absolute;
+				right: 0;
+				top: 0;
+				box-shadow: 0px 4px 5px -3px #333;
+			}
+
+			.icon-loading {
+				color: $brand-primary;
+			}
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	youtube-playlist {
+		width: 240px;
+	}
+}
+@media (min-width: 767px) {
+	.youtube-list-item {
+			max-width: 320px;
+	}
+}
+@media (min-width: 1440px) {
+	youtube-playlist {
+		width: 280px;
+	}
+}
