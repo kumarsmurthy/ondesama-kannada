@@ -34,14 +34,20 @@ import { YoutubeMediaItemsMock } from '../../../tests/mocks/youtube.media.items'
         </div>
         <div class="btn-group btn-group-sm">
           <label type="button" class="btn btn-default navbar-btn">
-            <input type="radio" formControlName="preset" value="">Any
+            <input type="radio" formControlName="preset" value="Kannada songs">Songs
           </label>
           <label type="button" class="btn btn-default navbar-btn">
-            <input type="radio" formControlName="preset" value="full album">Albums
+            <input type="radio" formControlName="preset" value="kannada comedy">Comedy
           </label>
           <label type="button" class="btn btn-default navbar-btn">
-            <input type="radio" formControlName="preset" value="live">Live
+            <input type="radio" formControlName="preset" value="Kannada full movie">Movies
           </label>
+            <label type="button" class="btn btn-default navbar-btn">
+            <input type="radio" formControlName="preset" value="Kannada live news">News
+          </label>
+            <label type="button" class="btn btn-default navbar-btn">
+            <input type="radio" formControlName="preset" value="Kannada short films">Short films
+        </label>
         </div>
       </form>
     </div>
