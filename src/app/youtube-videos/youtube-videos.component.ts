@@ -23,15 +23,7 @@ import { YoutubeMediaItemsMock } from '../../../tests/mocks/youtube.media.items'
       <form class="navbar-form form-search" id="media-explorer"
         [formGroup]="searchForm"
         (ngSubmit)="search()">
-        <div class="form-group clearfix">
-          <input placeholder="Explore Media" id="media-search" 
-            type="search" class="form-control" autocomplete="off"
-            formControlName="mediaSearch"
-            >
-          <button class="btn btn-transparent btn-submit navbar-btn" type="submit" title="search with echoes">
-            <i class="fa fa-search"></i>
-          </button>
-        </div>
+        
         <div class="btn-group btn-group-sm">
           <label type="button" class="btn btn-default navbar-btn">
             <input type="radio" formControlName="preset" value="Kannada songs">Songs

@@ -30,16 +30,16 @@ module.exports = {
     { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/assets/icon/android-icon-192x192.png' },
 
     /** <link> tags for favicons **/
-    { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/assets/icon/favicon-32x32.png' },
-    { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/assets/icon/favicon-96x96.png' },
-    { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/assets/icon/favicon-16x16.png' },
+    { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/assets/icon/favicon32.png' },
+    { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/assets/icon/favicon96.png' },
+    { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/assets/icon/favicon16.png' },
 
     /** <link> tags for a Web App Manifest **/
     { rel: 'manifest', href: '/assets/manifest.json' }
   ],
   meta: [
     { name: 'msapplication-TileColor', content: '#00bcd4' },
-    { name: 'msapplication-TileImage', content: '/assets/icon/ms-icon-144x144.png', '=content': true },
+    { name: 'msapplication-TileImage', content: '/assets/icon/favicon144.png', '=content': true },
     { name: 'theme-color', content: '#00bcd4' }
   ]
 };

@@ -21,7 +21,7 @@ const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin')
  */
 const HMR = helpers.hasProcessFlag('hot');
 const METADATA = {
-  title: 'Echoes Player - Open Source Media Player for Youtube',
+  title: 'Ondesama - Kannada Media Player for Youtube',
   baseUrl: '/',
   isDevServer: helpers.isWebpackDevServer()
 };
