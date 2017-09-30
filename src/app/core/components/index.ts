@@ -1,11 +1,9 @@
-import { AppPlayerModule } from './app-player';
-import { AppNavigatorModule } from './app-navigator';
-import { NowPlayingModule } from './now-playing';
-import { AppBrandModule } from './app-brand';
+import { YoutubeList } from './youtube-list';
+import { YoutubeMedia } from './youtube-media';
+import { YoutubePlaylist } from './youtube-playlist';
 
-export const APP_CORE_MODULES = [
-  AppPlayerModule,
-  AppNavigatorModule,
-  NowPlayingModule,
-  AppBrandModule
+export const CORE_COMPONENTS = [
+  YoutubeList,
+  YoutubeMedia,
+  YoutubePlaylist
 ];

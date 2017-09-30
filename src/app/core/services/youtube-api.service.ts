@@ -1,36 +1,35 @@
-import { Http, URLSearchParams, RequestOptionsArgs, Headers } from '@angular/http';
+import { Http, URLSearchParams, Response, RequestOptionsArgs, Headers } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { YOUTUBE_API_KEY } from './constants';
-import { Authorization } from './authorization.service';
-
-import 'rxjs/add/operator/toPromise';
-import 'rxjs/add/observable/fromPromise';
+import { window } from '@angular/platform-browser/src/facade/browser';
+import { YOUTUBE_API_KEY, CLIENT_ID } from './constants';
 
 interface YoutubeApiServiceOptions {
   url?: string;
-  http?: Http;
+  http: Http;
   idKey?: string;
-  authService?: Authorization;
   config?: any;
-  authorize?: boolean;
 }
 
 @Injectable()
+export class YoutubeApiFactory {
+  create(): YoutubeApiService {
+    return new YoutubeApiService();
+  }
+}
+
 export class YoutubeApiService {
   url: string;
   http: Http;
   idKey: string;
-  authorize = false;
-  isSearching = false;
+  isSearching: Boolean = false;
   config: URLSearchParams = new URLSearchParams();
   nextPageToken: string;
+  private accessToken: string;
 
-  // constructor(options: YoutubeApiServiceOptions, private authService?: Authorization) {
-  constructor(options: any, private authService?: Authorization) {
+  constructor() {}
+
+  setOptions(options: YoutubeApiServiceOptions) {
     this.resetConfig();
-    if (authService) {
-      this.authorize = true;
-    }
     if (options) {
       this.url = options.url;
       this.http = options.http;
@@ -47,8 +46,12 @@ export class YoutubeApiService {
     });
   }
 
-  hasToken(): boolean {
-    return this.authService && this.authService.accessToken.length > 0;
+  setToken(token: string) {
+    this.accessToken = token;
+  }
+
+  hasToken (): boolean {
+    return this.accessToken.length > 0;
   }
 
   resetConfig() {
@@ -59,16 +62,17 @@ export class YoutubeApiService {
   }
 
   getList() {
+    const accessToken = this.accessToken;
     this.isSearching = true;
     let options: RequestOptionsArgs = {
       search: this.config,
-      headers: this.createHeaders()
+      headers: accessToken ? new Headers({ Authorization: `Bearer ${accessToken}` }) : new Headers()
     };
     return this.http.get(this.url, options)
       .map(response => response.json());
   }
 
-  list(id) {
+  list(id, token?) {
     if (this.idKey) {
       this.config.set(this.idKey, id);
     }
@@ -76,7 +80,7 @@ export class YoutubeApiService {
     this.isSearching = true;
     let options: RequestOptionsArgs = {
       search: this.config,
-      headers: this.createHeaders()
+      headers: token ? new Headers({ Authorization: `Bearer ${token}` }) : new Headers()
     };
     return this.http.get(this.url, options)
       .map(response => response.json())
@@ -87,22 +91,14 @@ export class YoutubeApiService {
       });
   }
 
-  fetchNextPage() {
+  setNextPageToken() {
     if (!this.isSearching) {
       this.config.set('pageToken', this.nextPageToken);
     }
+    return this.nextPageToken;
   }
 
-  resetPageToken() {
+  resetPageToken () {
     this.config.set('pageToken', '');
-  }
-
-  createHeaders() {
-    const accessToken = this.authService && this.authService.accessToken;
-    const headersOptions = {};
-    if (accessToken && this.authorize) {
-      headersOptions['authorization'] = `Bearer ${accessToken}`;
-    }
-    return new Headers(headersOptions);
   }
 }

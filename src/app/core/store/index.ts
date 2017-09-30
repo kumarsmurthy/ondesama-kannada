@@ -1,51 +1,53 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { NgModule } from '@angular/core';
-import { StoreModule, combineReducers } from '@ngrx/store';
-import { compose } from '@ngrx/core/compose';
+import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { localStorageSync } from 'ngrx-store-localstorage';
-import 'rxjs/add/operator/let';
 
-// import { ActionCreatorFactory } from 'ngrx-action-creator-factory';
-// import { NgrxActionCreatorFactoryModule } from './action-creator.util';
+import { ActionReducer, Action, combineReducers } from '@ngrx/store';
+import { compose } from '@ngrx/core/compose';
 
-import { environment } from '../../../environments/environment';
-import { getSidebarExpanded } from './app-layout';
-import { EchoesState, EchoesReducers, EchoesActions } from './reducers';
+// reducers
+import { EchoesVideos, GoogleApiYoutubeVideo, videos, YoutubeVideosActions } from './youtube-videos';
+import { nowPlaylist, NowPlaylistActions, YoutubeMediaPlaylist } from './now-playlist';
 
-// import { storeFreeze } from 'ngrx-store-freeze';
+// plugins
 
-export { EchoesState } from './reducers';
-const actions = EchoesActions;
-const reducers = EchoesReducers;
-// const storageConfig = ['videos', 'player', 'nowPlaylist', 'search', 'appLayout'];
-const composeStore = reducers;
+/**
+ * we treat each reducer like a table in a database. This means
+ * our top level state interface is just a map of keys to inner state types.
+ */
+export interface EchoesState {
+  videos: EchoesVideos;
+  nowPlaylist: YoutubeMediaPlaylist;
+}
+
+export const getVideoResults$ = (store$: Observable<EchoesState>): Observable<GoogleApiYoutubeVideo[]> => {
+  return store$.select(state => state.videos.results);
+};
+
+const actions = [
+  YoutubeVideosActions,
+  NowPlaylistActions
+];
+
+const reducers = { videos, nowPlaylist };
 const optionalImports = [];
-const productionReducer = compose(localStorageSync(Object.keys(reducers), true), combineReducers)(reducers);
-// const productionReducer = combineReducers(reducers);
-// This is required for AOT
-export function appReducer(state: any, action: any) {
-  return productionReducer(state, action);
+if ('production' !== ENV) {
+  // Note that you must instrument after importing StoreModule
+  optionalImports.push(StoreDevtoolsModule.instrumentOnlyWithExtension());
 }
-if (!environment.production) {
-    // Note that you must instrument after importing StoreModule
-    optionalImports.push(StoreDevtoolsModule.instrumentOnlyWithExtension());
-}
+
 @NgModule({
   imports: [
-    StoreModule.provideStore(appReducer),
+    StoreModule.provideStore(reducers),
     ...optionalImports
   ],
-  declarations: [],
-  exports: [],
+  declarations: [
+
+  ],
+  exports: [
+
+  ],
   providers: [ ...actions ]
 })
 export class CoreStoreModule {};
-
-// shared selectors
-function getAppLayoutState(state$: Observable<EchoesState>) {
-  return state$.select(state => state.appLayout);
-}
-export function getSidebarCollapsed$(state$: Observable<EchoesState>) {
-  return state$.select((state) => state.appLayout.sidebarExpanded);
-}

@@ -1,76 +1,61 @@
-/*
- * Testing a Service
- * More info: https://angular.io/docs/ts/latest/guide/testing.html
- */
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
-import { PlayerSearchActions } from '../store/player-search';
-import { YoutubeDataApi } from './youtube-data-api.service';
+import { Http, HttpModule } from '@angular/http';
+import { YoutubeApiFactory } from './youtube-api.service';
 import { YoutubeSearch } from './youtube.search';
 
 describe('Youtube Search Service', () => {
   let service: YoutubeSearch;
-  let youtubeDataApiSpy: YoutubeDataApi;
 
   beforeEach(() => {
-    youtubeDataApiSpy = jasmine.createSpyObj('youtubeDataApiSpy',
-      [ 'list' ]
+    let youtubeApiServiceSpy = jasmine.createSpyObj('youtubeApiServiceSpy',
+      [ 'setOptions', 'setConfig', 'isNewSearchQuery', 'setNextPageToken', 'resetPageToken' ]
     );
+    const youtubeApiFactory = {
+      create: () => youtubeApiServiceSpy
+    };
+    youtubeApiServiceSpy.list = (val) => {
+      return {
+        map: (fn) => fn({ items: [ 'mock' ] })
+      };
+    };
+    youtubeApiServiceSpy.config = {
+      q: '',
+      get: (q) => youtubeApiServiceSpy.config.q,
+      set: (q) => youtubeApiServiceSpy.config.q = q
+    };
+    // spyOn(youtubeApiServiceSpy, 'list').and.callThrough();
+    spyOn(YoutubeSearch.prototype, 'resetPageToken').and.callThrough();
 
     TestBed.configureTestingModule({
       imports: [ HttpModule ],
       providers: [
         YoutubeSearch,
-        PlayerSearchActions,
-        { provide: YoutubeDataApi, useValue: youtubeDataApiSpy },
+        { provide: YoutubeApiFactory, useValue: youtubeApiFactory },
       ]
     });
   });
 
-  // instantiation through framework injection
   beforeEach(inject([YoutubeSearch], (youtubeSearch) => {
     service = youtubeSearch;
   }));
 
-  it('should have a search method', () => {
-    const actual = service.search;
+  it('should have an api instance', () => {
+    const actual = service.api;
     expect(actual).toBeDefined();
   });
 
-  it('should perform search with the api', () => {
-    const actual = youtubeDataApiSpy.list;
-    service.search('ozrics');
+  it('should reset page token', () => {
+    const query = 'ozrics';
+    service.resetPageToken();
+    const actual = service.api.resetPageToken;
     expect(actual).toHaveBeenCalled();
   });
 
-  it('should search with same value when searching more', () => {
+  it('should NOT set the next page token when searching and asked to search more', () => {
     const query = 'ozrics';
-    const nextPageToken = 'fdsaf#42441';
-    service.search(query);
-    service.searchMore(nextPageToken);
-    service.search(query);
-    const actual = youtubeDataApiSpy.list;
-    const expected = {
-      part: 'snippet,id',
-      q: query,
-      type: 'video',
-      pageToken: nextPageToken
-    };
-    expect(actual).toHaveBeenCalledWith('search', expected);
-  });
-
-  it('should reset the page token', () => {
-    const query = 'ozrics';
-    service.searchMore('fakePageToken$#@$$!');
-    service.resetPageToken();
-    service.search(query);
-    const actual = youtubeDataApiSpy.list;
-    const expected = {
-      part: 'snippet,id',
-      q: query,
-      type: 'video',
-      pageToken: ''
-    };
-    expect(actual).toHaveBeenCalledWith('search', expected);
+    service.isSearching = true;
+    service.searchMore();
+    const actual = service.api.setNextPageToken;
+    expect(actual).not.toHaveBeenCalled();
   });
 });

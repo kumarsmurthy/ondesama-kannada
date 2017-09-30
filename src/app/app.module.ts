@@ -1,39 +1,52 @@
+import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
-import { CoreModule } from './core';
-import { SharedModule } from './shared';
-
-import { APP_CORE_MODULES } from './core/components';
-import { APP_CONTAINER_MODULES } from './containers';
+// Platform and Environment providers/directives/pipes
+import { ENV_PROVIDERS } from './environment';
 import { ROUTES } from './app.routes';
 
-import { AppComponent } from './app.component';
-import { AppAppComponent } from './core/components/app-app/app-app.component';
+// App is our top level component
+import { App } from './app.component';
 
+// COMPONENTS
+import { CORE_COMPONENTS } from './core/components';
+
+import { YoutubeVideosModule } from './youtube-videos';
+import { NowPlayingModule } from './now-playing';
+import { PlayerModule } from './player';
+
+import { CoreModule } from './core';
+// SERVICES
+import { APP_SERVICES } from './core/services';
+
+import 'rxjs/Rx';
+
+// Application wide providers
+const APP_PROVIDERS = [
+  APP_SERVICES
+];
+
+// AppModule is the main entry point into Angular2's bootstraping process
 @NgModule({
+  bootstrap: [ App ],
   declarations: [
-    AppComponent,
-    AppAppComponent
+    App
   ],
-  imports: [
+  imports: [ // import Angular's modules
     BrowserModule,
-    FormsModule,
     HttpModule,
-    JsonpModule,
     RouterModule.forRoot(ROUTES, { useHash: true }),
-    BrowserAnimationsModule,
-
     CoreModule,
-    SharedModule,
-    ...APP_CORE_MODULES,
-    ...APP_CONTAINER_MODULES
+
+    YoutubeVideosModule,
+    NowPlayingModule,
+    PlayerModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [ // expose our Services and Providers into Angular's dependency injection
+    ENV_PROVIDERS,
+    APP_PROVIDERS
+  ]
 })
 export class AppModule { }

@@ -1,35 +1,47 @@
+import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { YoutubeDataApi } from './youtube-data-api.service';
+import { YoutubeApiFactory, YoutubeApiService } from './youtube-api.service';
 
 @Injectable()
 export class YoutubeSearch {
-  private _api: string = 'search';
-  private _apiOptions = {
-    part: 'snippet,id',
-    q: '',
-    type: 'video',
-    pageToken: ''
-  };
+  url: string = 'https://www.googleapis.com/youtube/v3/search';
+  api: YoutubeApiService;
+  isSearching: Boolean = false;
 
-  constructor(
-    private youtubeDataApi: YoutubeDataApi
-    ) { }
-
-  search(query: string, params?: any) {
-    if (query || '' === query) {
-      const preset = params ? ` ${params.preset}` : '';
-      this._apiOptions.q = `${query}${preset}`;
-    }
-    return this.youtubeDataApi.list(this._api, this._apiOptions);
+  constructor(private http: Http, apiFactory: YoutubeApiFactory) {
+    this.api = apiFactory.create();
+    this.api.setOptions({
+      url: this.url,
+      http: http,
+      config: {
+        part: 'snippet,id',
+        q: '',
+        type: 'video'
+      }
+    });
   }
 
-  searchMore(nextPageToken: string) {
-    this._apiOptions.pageToken = nextPageToken;
-    return this;
+  search(query: string) {
+    this.api.config.set('q', query);
+    this.isSearching = true;
+    return this.api.list('video')
+      .map((response: any) => {
+        this.isSearching = false;
+        return response.items;
+      });
+  }
+
+  searchMore() {
+    if (!this.isSearching) {
+      return this.api.setNextPageToken();
+    }
   }
 
   resetPageToken () {
-    this._apiOptions.pageToken = '';
-    return this;
+    this.api.resetPageToken();
+  }
+
+  isNewSearchQuery (query: string) {
+    return query !== this.api.config.get('q');
   }
 }

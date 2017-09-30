@@ -1,2 +1,2 @@
-export const YOUTUBE_API_KEY: string = 'AIzaSyDCGg6FG6s_zxACqel09vQUKBc-x26pKFA';
-export const CLIENT_ID: string = '971861197531-hm7solf3slsdjc4omsfti4jbcbe625hs';
+export const YOUTUBE_API_KEY: string = 'AIzaSyCVYIw6U-DRioMSJ2ZUm0H3kdQyR_D6oQk';
+export const CLIENT_ID: string = '971861197531-i7h00h6789mkievtthgn6qoommbs76ih';

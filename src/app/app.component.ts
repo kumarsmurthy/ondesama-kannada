@@ -1,22 +1,58 @@
-import { VersionCheckerService } from './core/services/version-checker.service';
+/*
+ * Angular 2 decorators and services
+ */
 import { Component, ViewEncapsulation } from '@angular/core';
-import { EchoesState, getSidebarCollapsed$ } from './core/store';
-import { Store } from '@ngrx/store';
-import 'rxjs/add/operator/let';
 
+// SERVICES
+import { YoutubeSearch, PlayerService, NowPlaylistService } from './core/services';
+import { EchoesState } from './core/store';
+
+
+import { Observable } from 'rxjs/Observable';
+import { Store } from '@ngrx/store';
+
+/*
+ * App Component
+ * Top Level Component
+ */
 @Component({
-  selector: 'app-root',
+  selector: 'app',
   encapsulation: ViewEncapsulation.None,
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  template: require('./app.html')
 })
-export class AppComponent {
-  sidebarCollapsed$ = this.store.let(getSidebarCollapsed$);
+export class App {
 
   constructor(
-    private store: Store<EchoesState>,
-    private versionCheckerService: VersionCheckerService
+    public youtubeSearch: YoutubeSearch,
+    public playerService: PlayerService,
+    public nowPlaylistService: NowPlaylistService,
+    public store: Store<EchoesState>
   ) {
-    versionCheckerService.start();
+
+  }
+
+  selectVideo (media: GoogleApiYouTubeVideoResource) {
+
+
+    this.nowPlaylistService.updateIndexByMedia(media.id);
+  }
+
+  handleVideoEnded (state) {
+    if (!this.isLastIndex()) {
+      this.playNextVideo(state);
+    }
+  }
+
+  playNextVideo (player) {
+    this.nowPlaylistService.selectNextIndex();
+    // this.playerService.playVideo(this.nowPlaylistService.getCurrent());
+  }
+
+  sortVideo (media: GoogleApiYouTubeSearchResource) {
+
+  }
+
+  isLastIndex() {
+
   }
 }

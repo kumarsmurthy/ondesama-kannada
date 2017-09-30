@@ -67,6 +67,3 @@ npm-debug.log
 .idea/
 *.swp
 *.tag*
-\.firebaserc
-
-firebase\.json

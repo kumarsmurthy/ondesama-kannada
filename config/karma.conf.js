@@ -37,17 +37,16 @@ module.exports = function(config) {
     webpack: testWebpackConfig,
 
     coverageReporter: {
-      type: 'in-memory'
-    },
-
-    remapCoverageReporter: {
-      'text-summary': null,
-      json: './coverage/coverage.json',
-      html: './coverage/html'
+      dir : 'coverage/',
+      reporters: [
+        { type: 'text-summary' },
+        { type: 'json' },
+        { type: 'html' }
+      ]
     },
 
     // Webpack please don't spam the console when running in karma!
-    webpackMiddleware: { stats: 'errors-only'},
+    webpackServer: { noInfo: true },
 
     /*
      * test results reporter to use
@@ -55,7 +54,6 @@ module.exports = function(config) {
      * possible values: 'dots', 'progress'
      * available reporters: https://npmjs.org/browse/keyword/karma-reporter
      */
-    // reporters: [ 'mocha', 'coverage', 'remap-coverage' ],
     reporters: [ 'mocha', 'coverage' ],
 
     // web server port
@@ -71,7 +69,7 @@ module.exports = function(config) {
     logLevel: config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
     /*
      * start these browsers
@@ -92,11 +90,11 @@ module.exports = function(config) {
      * Continuous Integration mode
      * if true, Karma captures browsers, runs the tests and exits
      */
-    singleRun: process.env.TRAVIS ? true : false
+    singleRun: true
   };
 
   if (process.env.TRAVIS){
-    configuration.browsers = ['PhantomJS'];
+    configuration.browsers = ['ChromeTravisCi'];
   }
 
   config.set(configuration);
