@@ -18,8 +18,8 @@ export class PlayerService {
 
   private isFullscreen: boolean = false;
   private defaultSizes = {
-    height: 270,
-    width: 367
+    height: 150,
+    width: 200
   };
 
   constructor(private zone: NgZone) {
