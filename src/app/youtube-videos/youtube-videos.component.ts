@@ -76,6 +76,7 @@ export class YoutubeVideosComponent implements OnInit {
   ngOnInit() {
     this.videos$ = this.store.let(getVideoResults$);
     this.setupForm();
+    this.store.dispatch(this.youtubeVideosActions.searchNewQuery("Kannda songs"));
   }
 
   setupForm() {
